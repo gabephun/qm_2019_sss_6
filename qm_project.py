@@ -58,7 +58,22 @@ def pseudopotential_energy(o, r, model_parameters):
 
 
 def calculate_energy_ion(atomic_coordinates):
-    '''Returns the ionic contribution to the total energy for an input list of atomic coordinates.'''
+   
+    """Returns the ionic contribution to the total energy for an input list of atomic coordinates.
+   
+
+    Parameters
+    ----------
+    coordinates : np.array
+        An array of atomic coordinates. 
+        Defines initial energy of the ion as 0.0. 
+
+    Returns
+    -------
+    Energy of the ions : int/Float/ndarray
+        A float, integer, or ndarray depending on the size of the molecule. 
+    """
+    
     energy_ion = 0.0
     for i, r_i in enumerate(atomic_coordinates):
         for j, r_j in enumerate(atomic_coordinates):
@@ -68,8 +83,22 @@ def calculate_energy_ion(atomic_coordinates):
     return energy_ion
 
 def calculate_potential_vector(atomic_coordinates, model_parameters):
-    '''Returns the electron-ion potential energy vector for an input list of atomic coordinates.'''
-    ndof = len(atomic_coordinates) * orbitals_per_atom
+    """Returns the electron-ion potential energy vector for an input list of atomic coordinates.
+    
+    Parameters
+    ----------
+    coordinates : np.array
+        An array of atomic coordinates. 
+    Initial Properties: dict
+        Initial parameters that define the molecule.
+
+
+    Returns
+    -------
+    Potential Energy Vector of the molecule : ndarray
+        An ndarray containing the direction and the magnitude of the potential energy of the molecule.
+        """
+        ndof = len(atomic_coordinates) * orbitals_per_atom
     potential_vector = np.zeros(ndof)
     for p in range(ndof):
         potential_vector[p] = 0.0
@@ -182,7 +211,21 @@ def calculate_density_matrix(fock_matrix):
 def scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix,
               chi_tensor, max_scf_iterations = 100,
               mixing_fraction = 0.25, convergence_tolerance = 1e-4):
-    '''Returns converged density & Fock matrices defined by the input Hamiltonian, interaction, & density matrices.'''
+    """Returns converged density & Fock matrices defined by the input Hamiltonian, interaction, & density matrices.
+    
+    Parameters
+    ----------
+    Initial Hamiltonian : np.array
+        Defines the initial orbital energy and phase space. 
+    Interaction Matrix: ndarray
+        Defines the initial interaction between different atoms.
+    Density Matrix: ndarray
+        Defines the electron density on atoms.  
+
+    Returns
+    -------
+    If SCF converges, then returns modified density matrix and modified fock matrix.
+"""
     old_density_matrix = density_matrix.copy()
     for iteration in range(max_scf_iterations):
         new_fock_matrix = calculate_fock_matrix(hamiltonian_matrix, interaction_matrix, old_density_matrix, chi_tensor)
