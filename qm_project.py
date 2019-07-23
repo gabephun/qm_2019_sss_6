@@ -16,7 +16,26 @@ def ao_index(atom_p, orb_p):
     return p
 
 def hopping_energy(o1, o2, r12, model_parameters):
-    '''Returns the hopping matrix element for a pair of orbitals of type o1 & o2 separated by a vector r12.'''
+    '''Returns the hopping matrix element for a pair of orbitals of type o1 & o2 separated by a vector r12.
+
+       Parameters
+       ----------
+       o1 : str
+        a string of the type of the orbital
+       o2 : str
+        a string of the type of the orbital
+       r12 : np.array
+        difference vector between atoms
+       model_parameters : dict
+        a dictionary of parameters as a kay, and energies or distances as a values
+
+       Return
+       -----------
+       hopping_energy : np.array
+        hopping energies between two orbitals
+
+    '''
+    
     r12_rescaled = r12 / model_parameters['r_hop']
     r12_length = np.linalg.norm(r12_rescaled)
     ans = np.exp( 1.0 - r12_length**2 )
@@ -48,7 +67,21 @@ def coulomb_energy(o1, o2, r12):
     return ans
 
 def pseudopotential_energy(o, r, model_parameters):
-    '''Returns the energy of a pseudopotential between a multipole of type o and an atom separated by a vector r.'''
+    '''Returns the energy of a pseudopotential between a multipole of type o and an atom separated by a vector r.
+
+       Parameters
+       ----------
+       o : str
+        a string of the type of the orbital
+       r : np.array
+        difference vector between atoms
+
+       Return
+       -----------
+       pseudo_vector = np.array
+        calcualte the pseudo energy
+
+    '''
     ans = model_parameters['v_pseudo']
     r_rescaled = r / model_parameters['r_pseudo']
     ans *= np.exp(1.0 - np.dot(r_rescaled, r_rescaled))
