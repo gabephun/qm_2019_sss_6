@@ -82,7 +82,21 @@ def calculate_potential_vector(atomic_coordinates, model_parameters):
     return potential_vector
 
 def calculate_interaction_matrix(atomic_coordinates, model_parameters):
-    '''Returns the electron-electron interaction energy matrix for an input list of atomic coordinates.'''
+    '''Returns the electron-electron interaction energy matrix for an input list of atomic coordinates.
+
+    Inputs
+    ------
+    atomic_coordinates : np.array
+        an array that contains the coordinates of atoms
+    model_parameters : dict
+        a dictionary that contains parameters in this semi-empirical model
+
+    Outputs
+    -------
+    interaction_matrix : np.array
+        an array that whose elements are electron-electron interaction energies
+
+    '''
     ndof = len(atomic_coordinates)*orbitals_per_atom
     interaction_matrix = np.zeros( (ndof,ndof) )
     for p in range(ndof):
@@ -93,11 +107,27 @@ def calculate_interaction_matrix(atomic_coordinates, model_parameters):
             if p == q and orb(p) == 's':
                 interaction_matrix[p,q] = model_parameters['coulomb_s']
             if p == q and orb(p) in p_orbitals:
-                interaction_matrix[p,q] = model_parameters['coulomb_p']                
+                interaction_matrix[p,q] = model_parameters['coulomb_p']
     return interaction_matrix
 
 def chi_on_atom(o1, o2, o3, model_parameters):
-    '''Returns the value of the chi tensor for 3 orbital indices on the same atom.'''
+    '''Returns the value of the chi tensor for 3 orbital indices on the same atom.
+
+    Inputs
+    ------
+    o1 : string
+        orbital type
+    o2 : string
+        orbital type
+    o3 : string
+        orbital type
+    model_parameters : dict
+        a dictionary that contains parameters in this semi-empirical model
+
+    Outputs
+    -------
+    value of chi_tensor : float
+    '''
     if o1 == o2 and o3 == 's':
         return 1.0
     if o1 == o3 and o3 in p_orbitals and o2 == 's':
@@ -198,13 +228,40 @@ def scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix,
     return new_density_matrix, new_fock_matrix
 
 def calculate_energy_scf(hamiltonian_matrix, fock_matrix, density_matrix):
-    '''Returns the Hartree-Fock total energy defined by the input Hamiltonian, Fock, & density matrices.'''
+    '''Returns the Hartree-Fock total energy defined by the input Hamiltonian, Fock, & density matrices.
+
+    Inputs
+    ------
+    hamiltonian_matrix : np.array
+
+    fock_matrix : np.array
+
+    density_matrix : np.array
+
+
+    Output
+    ------
+    energy_scf : float
+        Hartree-Fock total energy
+
+    '''
     energy_scf = np.einsum('pq,pq', hamiltonian_matrix + fock_matrix,
                            density_matrix)
     return energy_scf
 
 def partition_orbitals(fock_matrix):
-    '''Returns a list with the occupied/virtual energies & orbitals defined by the input Fock matrix.'''
+    '''Returns a list with the occupied/virtual energies & orbitals defined by the input Fock matrix.
+
+    Inputs
+    ------
+    fock_matrix : np.array
+
+    Output
+    ------
+    partioned orbitals : list
+        occupied energy, virtual energy, occupied_matrix, virtual_matrix
+
+    '''
     num_occ = (ionic_charge // 2) * np.size(fock_matrix,
                                             0) // orbitals_per_atom
     orbital_energy, orbital_matrix = np.linalg.eigh(fock_matrix)
@@ -283,7 +340,7 @@ if __name__ == "__main__":
     'coulomb_s' : 0.3603533286088998,
     'coulomb_p' : -0.003267991835806299
     }
-    
+
     # Start energy calculation
 
     # electron-electron interaction matrix
@@ -294,13 +351,13 @@ if __name__ == "__main__":
     # Initial Hamiltonian and Density matrix
     hamiltonian_matrix = calculate_hamiltonian_matrix(atomic_coordinates, model_parameters)
     density_matrix = calculate_atomic_density_matrix(atomic_coordinates)
-    
+
     # Use density matrix to calculate Fock matrix, then use Fock matrix to calculate new density matrix??
     fock_matrix = calculate_fock_matrix(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)
     density_matrix = calculate_density_matrix(fock_matrix)
 
     # SCF Cycle
-    density_matrix, fock_matrix = scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)  
+    density_matrix, fock_matrix = scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)
     energy_ion = calculate_energy_ion(atomic_coordinates)
     energy_scf = calculate_energy_scf(hamiltonian_matrix, fock_matrix, density_matrix)
 
