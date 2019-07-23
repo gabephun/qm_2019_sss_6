@@ -10,7 +10,20 @@ def orb(ao_index):
     return orbital_types[orb_index]
 
 def ao_index(atom_p, orb_p):
-    '''Returns the atomic orbital index for a given atom index and orbital type.'''
+    '''Returns the atomic orbital index for a given atom index and orbital type.
+    
+    Parameters
+    ----------
+    atom_p: int
+        Index of atom
+    orb_p: str
+        orbital type
+
+    Returns
+    -------
+    p: int
+        atomic orbital
+    '''
     p = atom_p * orbitals_per_atom
     p += orbital_types.index(orb_p)
     return p
@@ -33,7 +46,23 @@ def hopping_energy(o1, o2, r12, model_parameters):
     return ans
 
 def coulomb_energy(o1, o2, r12):
-    '''Returns the Coulomb matrix element for a pair of multipoles of type o1 & o2 separated by a vector r12.'''
+    '''Returns the Coulomb matrix element for a pair of multipoles of type o1 & o2 separated by a vector r12.
+    
+    Parameters
+    ----------
+    o1: str
+        First multipole type
+    o2: str
+        Second multipole type
+    r12: np.array
+        Difference vector between multipole coordinates
+    
+    Returns
+    -------
+    ans: float
+        Calculated coulomb matrix element for pair of multipoles
+    '''
+
     r12_length = np.linalg.norm(r12)
     if o1 == 's' and o2 == 's':
         ans = 1.0 / r12_length
@@ -274,7 +303,25 @@ def partition_orbitals(fock_matrix):
 
 def transform_interaction_tensor(occupied_matrix, virtual_matrix,
                                  interaction_matrix, chi_tensor):
-    '''Returns a transformed V tensor defined by the input occupied, virtual, & interaction matrices.'''
+    '''Returns a transformed V tensor defined by the input occupied, virtual, & interaction matrices.
+    
+    Parameters
+    ----------
+    occupied_matrix: np.array
+        occupied block of fock matrix
+    virtual_matrix: np.array
+        virtual block of fock matrix
+    interaction_matrix: np.array
+        interaction matrix of Hamiltonian
+    chi_tensor: np.array
+        Rank 3 tensor mapping of products of atomic orbitals to LC of terms in multipole expansion
+
+    Returns
+    -------
+    interaction_tensor: np.array
+        transformed V tensor defined by the input occupied, virtual, & interaction matrices
+
+    '''
     chi2_tensor = np.einsum('qa,ri,qrp',
                             virtual_matrix,
                             occupied_matrix,
@@ -288,7 +335,21 @@ def transform_interaction_tensor(occupied_matrix, virtual_matrix,
     return interaction_tensor
 
 def calculate_energy_mp2(fock_matrix, interaction_matrix, chi_tensor):
-    '''Returns the MP2 contribution to the total energy defined by the input Fock & interaction matrices.'''
+    '''Returns the MP2 contribution to the total energy defined by the input Fock & interaction matrices.
+    
+    Parameters
+    ----------
+    fock_matrix: np.array
+        Fock matrix in hamiltonian
+    interaction_matrix: np.array
+        interaction matrix in hamiltonian
+    chi_tensor: np.array
+        Rank 3 tensor mapping of products of atomic orbitals to LC of terms in multipole expansion
+
+    Returns
+    -------
+    energy_mp2: float
+        MP2 energy defined by fock and interaction matrices
     E_occ, E_virt, occupied_matrix, virtual_matrix = partition_orbitals(
         fock_matrix)
     V_tilde = transform_interaction_tensor(occupied_matrix, virtual_matrix,
