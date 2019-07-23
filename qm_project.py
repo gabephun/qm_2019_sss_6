@@ -107,7 +107,23 @@ def chi_on_atom(o1, o2, o3, model_parameters):
     return 0.0
 
 def calculate_chi_tensor(atomic_coordinates, model_parameters):
-    '''Returns the chi tensor for an input list of atomic coordinates'''
+    '''Returns the chi tensor for an input list of atomic coordinates
+
+	Parameters
+	-----------
+	atomic_coordinates : np.array, float
+	model_parameters : dictionary
+	ndof : Number of degrees of freedom of the system, positive integer
+	chi_tensor : multidimensional array (related to vectors)
+	orb_q : key
+	orb_r : key
+	r = 
+	orbital_types: dictionary
+
+	
+
+'''
+
     ndof = len(atomic_coordinates) * orbitals_per_atom
     chi_tensor = np.zeros((ndof, ndof, ndof))
     for p in range(ndof):
