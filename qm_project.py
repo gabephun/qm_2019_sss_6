@@ -228,13 +228,40 @@ def scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix,
     return new_density_matrix, new_fock_matrix
 
 def calculate_energy_scf(hamiltonian_matrix, fock_matrix, density_matrix):
-    '''Returns the Hartree-Fock total energy defined by the input Hamiltonian, Fock, & density matrices.'''
+    '''Returns the Hartree-Fock total energy defined by the input Hamiltonian, Fock, & density matrices.
+
+    Inputs
+    ------
+    hamiltonian_matrix : np.array
+
+    fock_matrix : np.array
+
+    density_matrix : np.array
+
+
+    Output
+    ------
+    energy_scf : float
+        Hartree-Fock total energy
+
+    '''
     energy_scf = np.einsum('pq,pq', hamiltonian_matrix + fock_matrix,
                            density_matrix)
     return energy_scf
 
 def partition_orbitals(fock_matrix):
-    '''Returns a list with the occupied/virtual energies & orbitals defined by the input Fock matrix.'''
+    '''Returns a list with the occupied/virtual energies & orbitals defined by the input Fock matrix.
+
+    Inputs
+    ------
+    fock_matrix : np.array
+
+    Output
+    ------
+    partioned orbitals : list
+        occupied energy, virtual energy, occupied_matrix, virtual_matrix
+
+    '''
     num_occ = (ionic_charge // 2) * np.size(fock_matrix,
                                             0) // orbitals_per_atom
     orbital_energy, orbital_matrix = np.linalg.eigh(fock_matrix)
