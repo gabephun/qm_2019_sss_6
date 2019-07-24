@@ -151,7 +151,7 @@ def calculate_potential_vector(atomic_coordinates, model_parameters):
     ----------
     coordinates : np.array
         An array of atomic coordinates. 
-    Initial Properties: dict
+    Initial Properties : dict
         Initial parameters that define the molecule.
 
 
@@ -257,7 +257,20 @@ def calculate_chi_tensor(atomic_coordinates, model_parameters):
     return chi_tensor
 
 def calculate_hamiltonian_matrix(atomic_coordinates, model_parameters):
-    '''Returns the 1-body Hamiltonian matrix for an input list of atomic coordinates.'''
+    '''Returns the 1-body Hamiltonian matrix for an input list of atomic coordinates.
+
+       Parameters
+       -----------
+       atomic_coordinates : np.array
+        an array containing coordinates of atoms
+       model_parameters : dict
+        a dictionary that contains parameters in this semi-empirical model
+
+       Return
+       -----------
+       hamiltonian_matrix : np.array
+
+    '''
     ndof = len(atomic_coordinates) * orbitals_per_atom
     hamiltonian_matrix = np.zeros((ndof, ndof))
     potential_vector = calculate_potential_vector(atomic_coordinates,
@@ -282,7 +295,18 @@ def calculate_hamiltonian_matrix(atomic_coordinates, model_parameters):
     return hamiltonian_matrix
 
 def calculate_atomic_density_matrix(atomic_coordinates):
-    '''Returns a trial 1-electron density matrix for an input list of atomic coordinates.'''
+    '''Returns a trial 1-electron density matrix for an input list of atomic coordinates.
+
+       Parameters
+       ------------
+       atomic_coordinates : np.array
+        an array containing coordinates of atoms
+       
+       Return
+       ------------
+       density_matrix : np.array
+
+    '''
     ndof = len(atomic_coordinates) * orbitals_per_atom
     density_matrix = np.zeros((ndof, ndof))
     for p in range(ndof):
@@ -291,7 +315,20 @@ def calculate_atomic_density_matrix(atomic_coordinates):
 
 def calculate_fock_matrix(hamiltonian_matrix, interaction_matrix,
                           density_matrix, chi_tensor):
-    '''Returns the Fock matrix defined by the input Hamiltonian, interaction, & density matrices.'''
+    '''Returns the Fock matrix defined by the input Hamiltonian, interaction, & density matrices.
+
+       Parameters
+       ------------
+       hamiltonian_matrix : np.array
+       interaction_matrix : np.array
+       density_matrix : np.array
+       chi_tensor : np.array
+
+       Return
+       ------------
+       fock_matrix : np.array
+
+    '''
     fock_matrix = hamiltonian_matrix.copy()
     fock_matrix += 2.0 * np.einsum('pqt,rsu,tu,rs',
                                    chi_tensor,
@@ -308,7 +345,18 @@ def calculate_fock_matrix(hamiltonian_matrix, interaction_matrix,
     return fock_matrix
 
 def calculate_density_matrix(fock_matrix):
-    '''Returns the 1-electron density matrix defined by the input Fock matrix.'''
+    '''Returns the 1-electron density matrix defined by the input Fock matrix.
+
+        Parameters
+       ------------
+       fock_matrix : np.array
+       
+       Return
+       ------------
+       density_matrix : np.array
+
+
+    '''
     num_occ = (ionic_charge // 2) * np.size(fock_matrix,
                                             0) // orbitals_per_atom
     orbital_energy, orbital_matrix = np.linalg.eigh(fock_matrix)
