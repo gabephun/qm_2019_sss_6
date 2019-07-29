@@ -1,8 +1,8 @@
 class scf():
     def __init__(self,hamiltonian_matrix,interaction_matrix,density_matrix,chi_tensor,atomic_coordinates):
-        self.hamiltonian_matrix=hamiltonian_matrix
-        self.interaction_matrix=interaction_matrix
-        self.density_matrix= density_matrix
+        self.hamiltonian_matrix = hamiltonian_matrix
+        self.interaction_matrix = interaction_matrix
+        self.density_matrix = density_matrix
         self.chi_tensor = chi_tensor
         self.atomic_coordinates = atomic_coordinates
         self.converged = False
@@ -10,15 +10,15 @@ class scf():
                 chi_tensor, max_scf_iterations = 100,
                 mixing_fraction = 0.25, convergence_tolerance = 1e-4):
         """Returns converged density & Fock matrices defined by the input Hamiltonian, interaction, & density matrices.
-        
+
         Parameters
         ----------
         Initial Hamiltonian : np.array
-            Defines the initial orbital energy and phase space. 
+            Defines the initial orbital energy and phase space.
         Interaction Matrix: ndarray
             Defines the initial interaction between different atoms.
         Density Matrix: ndarray
-            Defines the electron density on atoms.  
+            Defines the electron density on atoms.
 
         Returns
         -------
@@ -38,22 +38,22 @@ class scf():
         print("WARNING: SCF cycle didn't converge")
         return new_density_matrix, new_fock_matrix
     def calculate_energy_ion(self,atomic_coordinates):
-    
+
         """Returns the ionic contribution to the total energy for an input list of atomic coordinates.
-    
+
 
         Parameters
         ----------
         coordinates : np.array
-            An array of atomic coordinates. 
-            Defines initial energy of the ion as 0.0. 
+            An array of atomic coordinates.
+            Defines initial energy of the ion as 0.0.
 
         Returns
         -------
         Energy of the ions : int/Float/ndarray
-            A float, integer, or ndarray depending on the size of the molecule. 
+            A float, integer, or ndarray depending on the size of the molecule.
         """
-        
+
         energy_ion = 0.0
         for i, r_i in enumerate(atomic_coordinates):
             for j, r_j in enumerate(atomic_coordinates):
@@ -88,7 +88,7 @@ class scf():
             Parameters
         ------------
         fock_matrix : np.array
-        
+
         Return
         ------------
         density_matrix : np.array
@@ -159,7 +159,7 @@ class Semi_Empirical_Model():
 
     def ao_index(atom_p, orb_p):
         '''Returns the atomic orbital index for a given atom index and orbital type.
-        
+
         Parameters
         ----------
         atom_p: int
@@ -219,7 +219,7 @@ class Semi_Empirical_Model():
        ------------
        atomic_coordinates : np.array
         an array containing coordinates of atoms
-       
+
        Return
        ------------
        density_matrix : np.array
@@ -242,10 +242,10 @@ class Semi_Empirical_Model():
         chi_tensor : multidimensional array (related to vectors)
         orb_q : key
         orb_r : key
-        r = 
+        r =
         orbital_types: dictionary
 
-        
+
 
     '''
 
@@ -290,22 +290,22 @@ class Semi_Empirical_Model():
         return interaction_matrix
 
     def calculate_energy_ion(atomic_coordinates):
-   
+
     """Returns the ionic contribution to the total energy for an input list of atomic coordinates.
-   
+
 
     Parameters
     ----------
     coordinates : np.array
-        An array of atomic coordinates. 
-        Defines initial energy of the ion as 0.0. 
+        An array of atomic coordinates.
+        Defines initial energy of the ion as 0.0.
 
     Returns
     -------
     Energy of the ions : int/Float/ndarray
-        A float, integer, or ndarray depending on the size of the molecule. 
+        A float, integer, or ndarray depending on the size of the molecule.
     """
-    
+
     energy_ion = 0.0
     for i, r_i in enumerate(atomic_coordinates):
         for j, r_j in enumerate(atomic_coordinates):
