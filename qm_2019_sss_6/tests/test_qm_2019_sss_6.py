@@ -219,7 +219,36 @@ def test_kernel():
     assert np.allclose( density_matrix, my_model.kernel()[3], rtol=1e-0)
     assert np.allclose( energy_ion, my_model.kernel()[4], rtol=1e-0)
 
+def test_calculate_fock_matrix():
+    expected_matrix = np.array(
+    [[ 5.4e+00,  2.5e-04,  3.3e-04,  4.2e-04,  6.5e-04,  5.3e-04,  7.1e-04,  8.9e-04],
+    [ 2.5e-04, -5.9e-01,  0.0e+00,  0.0e+00, -5.3e-04,  2.9e-04,  2.2e-03,  2.7e-03],
+    [ 3.3e-04,  0.0e+00, -5.9e-01,  0.0e+00, -7.1e-04,  2.2e-03,  1.6e-03,  3.6e-03],
+    [ 4.2e-04,  0.0e+00,  0.0e+00, -5.9e-01, -8.9e-04,  2.7e-03,  3.6e-03,  3.2e-03],
+    [ 6.5e-04, -5.3e-04, -7.1e-04, -8.9e-04,  5.4e+00, -2.5e-04, -3.3e-04, -4.2e-04],
+    [ 5.3e-04,  2.9e-04,  2.2e-03,  2.7e-03, -2.5e-04, -5.9e-01,  0.0e+00,  0.0e+00],
+    [ 7.1e-04,  2.2e-03,  1.6e-03,  3.6e-03, -3.3e-04,  0.0e+00, -5.9e-01,  0.0e+00],
+    [ 8.9e-04,  2.7e-03,  3.6e-03,  3.2e-03, -4.2e-04,  0.0e+00,  0.0e+00, -5.9e-01]])
+
+    assert np.allclose(my_scf.calculate_fock_matrix(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor), expected_matrix, rtol=1e-0)
+
+
+def test_calculate_density_matrix():
+    fock_matrix = my_scf.calculate_fock_matrix(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)
+    expected_matrix = np.array(
+    [[ 5.4e-08, -4.2e-05, -5.6e-05, -7.0e-05, -4.1e-08, -8.9e-05, -1.2e-04, -1.5e-04],
+    [-4.2e-05,  1.0e+00, -1.3e-08, -1.6e-08,  8.9e-05, -7.5e-09, -1.0e-08, -1.2e-08],
+    [-5.6e-05, -1.3e-08,  1.0e+00, -2.2e-08,  1.2e-04, -1.0e-08, -1.3e-08, -1.7e-08],
+    [-7.0e-05, -1.6e-08, -2.2e-08,  1.0e+00,  1.5e-04, -1.2e-08, -1.7e-08, -2.1e-08],
+    [-4.1e-08,  8.9e-05,  1.2e-04,  1.5e-04,  5.4e-08,  4.2e-05,  5.6e-05,  7.0e-05],
+    [-8.9e-05, -7.5e-09, -1.0e-08, -1.2e-08,  4.2e-05,  1.0e+00, -1.3e-08, -1.6e-08],
+    [-1.2e-04, -1.0e-08, -1.3e-08, -1.7e-08,  5.6e-05, -1.3e-08,  1.0e+00, -2.2e-08],
+    [-1.5e-04, -1.2e-08, -1.7e-08, -2.1e-08,  7.0e-05, -1.6e-08, -2.2e-08,  1.0e+00]])
+
+    assert np.allclose(my_scf.calculate_density_matrix(fock_matrix), expected_matrix, rtol=1e-0)
+
 # def test_scf_cycle():
+#     density_matrix = my_model.calculate_atomic_density_matrix(atomic_coordinates)
 #     fock_matrix = my_scf.calculate_fock_matrix(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)
 #     density_matrix = my_scf.calculate_density_matrix(fock_matrix)
 #     expected_matrix = np.array([[ 5.4e+00,  2.6e-04,  3.5e-04,  4.4e-04,  6.3e-04,  5.5e-04,  7.3e-04,  9.2e-04],
@@ -231,16 +260,17 @@ def test_kernel():
 #     [ 7.3e-04,  2.2e-03,  1.6e-03,  3.6e-03, -3.5e-04,  4.7e-09, -5.9e-01,  7.8e-09],
 #     [ 9.2e-04,  2.7e-03,  3.6e-03,  3.2e-03, -4.4e-04,  5.8e-09,  7.8e-09, -5.9e-01]])
 #
-#     density_matrix, fock_matrix = my_scf.scf_cycle(hamiltonian_matrix, interaction_matrix, density_matrix, chi_tensor)
+#     density_matrix, fock_matrix = my_scf.scf_cycle()
 #     assert np.allclose(expected_matrix, fock_matrix, rtol=1e-0)
+
 
 
 # def test_calculate_energy_scf():
 #
-# def test_calculate_density_matrix():
-#
+
+
 # def test_fast_fock_matrix():
 #
-# def test_calculate_fock_matrix():
+
 #
 # def test_initialize():
